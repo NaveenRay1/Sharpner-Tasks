@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+  <div class="w-full max-w-lg bg-white rounded-lg shadow-xl p-8">
+    <h3 class="text-2xl text-center font-bold text-gray-800">Expense Tracker</h3>
+    <form id="expenseForm" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Choose Expense Amount:</label>
+            <input type="number" id="amount" required
+            class="w-full bg-red-200 border border-gray-300 rounded-sm">
+
+        </div>
+        <div>
+            <label class="block text-sm font-medium">
+                Choose Description:
+            </label>
+            <input type="text" id="description" required
+            class="w-full bg-red-200 rounded-sm">
+        </div>
+        <div>
+            <label class="block text-sm font-medium">Choose a Category:</label>
+            <select class="w-full bg-red-200" id="category">
+            <option value="Fuel">Fuel</option>
+            <option value="Food">Food</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Movie">Movie</option>
+            </select>
+        </div>
+        <button type="submit" 
+          class="w-full bg-black text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-200">
+          Add Expense
+        </button>
+    </form>
+        <ul id="listOfExpenses" class="mt-6 space-y-2"></ul>
+
+  </div>
+  <script>
+    // 1. Select all the elements we need to work with
+    const form = document.getElementById('expenseForm');
+    const amountInput = document.getElementById('amount');
+    const descriptionInput = document.getElementById('description');
+    const categoryInput = document.getElementById('category');
+    const ul = document.getElementById('listOfExpenses');
+    form.addEventListener('submit',function(event){
+        event.preventDefault();
+        const amount = amountInput.value;
+        const description = descriptionInput.value;
+        const category = categoryInput.value;
+        console.log(amount,description,category);
+        const expenseObj ={
+            amount:amount,
+            description:description,
+            category:category
+        }
+        localStorage.setItem(description,JSON.stringify(expenseObj));
+        showNewExpenseOnScreen(expenseObj);
+        amountInput.value='';
+        descriptionInput.value='';
+        categoryInput.value='';
+
+    })
+   function showNewExpenseOnScreen(expense){
+        // 1. Create the List Item
+        const li = document.createElement('li');
+        
+        // Add the text (We put it in a span or just text node)
+        li.textContent = expense.amount + ' - ' + expense.description + ' - ' + expense.category + '  ';
+        
+        // Tailwind Styling: Flexbox ensures buttons stay to the right if we wanted, but for now simple is fine
+        li.className = "bg-white p-2 border-b border-gray-200 flex items-center justify-between";
+
+        // 2. Create a Container for buttons (so they stay together)
+        const btnContainer = document.createElement('div');
+
+        // --- DELETE BUTTON ---
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        // Tailwind: Red button, small text, rounded corners
+        deleteBtn.className = "bg-red-500 text-white px-2 py-1 rounded text-sm ml-2";
+        
+        // DELETE LOGIC
+        deleteBtn.onclick = () => {
+            // Remove from Local Storage (using description as the key)
+            localStorage.removeItem(expense.description);
+            // Remove from the Screen
+            ul.removeChild(li);
+        }
+
+        // --- EDIT BUTTON ---
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Edit';
+        // Tailwind: Yellow button
+        editBtn.className = "bg-yellow-500 text-white px-2 py-1 rounded text-sm ml-2";
+        
+        // EDIT LOGIC
+        editBtn.onclick = () => {
+            // 1. Remove from Local Storage (we will re-save it later)
+            localStorage.removeItem(expense.description);
+            // 2. Remove from Screen
+            ul.removeChild(li);
+            // 3. Put values back into the Input boxes
+            amountInput.value = expense.amount;
+            descriptionInput.value = expense.description;
+            categoryInput.value = expense.category;
+        }
+
+        // 3. Assemble everything
+        // Put buttons inside the container
+        btnContainer.appendChild(deleteBtn);
+        btnContainer.appendChild(editBtn);
+        
+        // Put the container inside the list item
+        li.appendChild(btnContainer);
+
+        // Put the list item inside the main list
+        ul.appendChild(li);
+    }
+// Listen for the page loading event
+    window.addEventListener("DOMContentLoaded", () => {
+        
+        // Loop through everything found in Local Storage
+        for(let i = 0; i < localStorage.length; i++) {
+            
+            // 1. Get the Key (which is the Description)
+            const key = localStorage.key(i);
+            
+            // 2. Get the Value (which is the JSON string)
+            const expenseString = localStorage.getItem(key);
+            
+            // 3. Convert the String back into an Object
+            const expenseObj = JSON.parse(expenseString);
+            
+            // 4. Show it on the screen using our existing function
+            showNewExpenseOnScreen(expenseObj);
+        }
+    });
+    
+    
+  </script>
+</body>
+</html>
