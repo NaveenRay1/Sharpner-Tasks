@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>General Store Seller Dashboard</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+  <div class="container mx-auto p-6">
+
+    <h1 class="text-3xl font-bold mb-6 text-center">General Store Seller Dashboard</h1>
+
+    <!-- ADD ITEM FORM -->
+    <div class="bg-white shadow-md p-5 rounded-lg mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+
+        <input id="itemName" class="border p-2 rounded" placeholder="Item Name">
+
+        <input id="itemDesc" class="border p-2 rounded" placeholder="Description">
+
+        <input id="itemPrice" class="border p-2 rounded" type="number" placeholder="Price">
+
+        <input id="itemQty" class="border p-2 rounded" type="number" placeholder="Quantity">
+
+        <button onclick="addItem()"
+          class="bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 transition">
+          Add Item
+        </button>
+      </div>
+    </div>
+
+    <!-- PRODUCT LIST -->
+    <div id="productList" class="space-y-3"></div>
+
+  </div>
+
+  <script>
+    const productList = document.getElementById("productList");
+
+    let products = [];
+
+    function addItem() {
+      const name = document.getElementById("itemName").value.trim();
+      const desc = document.getElementById("itemDesc").value.trim();
+      const price = Number(document.getElementById("itemPrice").value);
+      const qty = Number(document.getElementById("itemQty").value);
+
+      if (!name || !desc || !price || !qty) {
+        alert("Please fill all fields correctly");
+        return;
+      }
+
+      const product = { name, desc, price, qty };
+      products.push(product);
+
+      renderProducts();
+
+      document.getElementById("itemName").value = "";
+      document.getElementById("itemDesc").value = "";
+      document.getElementById("itemPrice").value = "";
+      document.getElementById("itemQty").value = "";
+    }
+
+    function renderProducts() {
+      productList.innerHTML = "";
+
+      products.forEach((product, index) => {
+        const div = document.createElement("div");
+        div.className =
+          "bg-white shadow-md p-4 rounded-lg flex justify-between items-center";
+
+        div.innerHTML = `
+          <div>
+            <h2 class="text-lg font-bold">${product.name}</h2>
+            <p class="text-gray-600">${product.desc}</p>
+          </div>
+
+          <p class="font-semibold">₹ ${product.price}</p>
+
+          <p class="font-semibold">Qty: 
+            <span id="qty-${index}" class="text-blue-600">${product.qty}</span>
+          </p>
+
+          <div class="space-x-2">
+            <button class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+              onclick="buy(${index},1)">Buy 1</button>
+
+            <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+              onclick="buy(${index},2)">Buy 2</button>
+
+            <button class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+              onclick="buy(${index},3)">Buy 3</button>
+          </div>
+        `;
+
+        productList.appendChild(div);
+      });
+    }
+
+    function buy(index, amount) {
+      if (products[index].qty < amount) {
+        alert("Not enough stock available!");
+        return;
+      }
+
+      products[index].qty -= amount;
+      document.getElementById(`qty-${index}`).innerText = products[index].qty;
+    }
+  </script>
+
+</body>
+</html>
