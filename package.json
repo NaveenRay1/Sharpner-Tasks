@@ -1,0 +1,23 @@
+{
+  "name": "sharpner-task-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "task3.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NaveenRay1/Sharpner-Tasks.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NaveenRay1/Sharpner-Tasks/issues"
+  },
+  "homepage": "https://github.com/NaveenRay1/Sharpner-Tasks#readme",
+  "dependencies": {
+    "http": "^0.0.1-security"
+  }
+}
