@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/NaveenRay1/Sharpner-Tasks#readme",
   "dependencies": {
+    "fs": "^0.0.1-security",
     "http": "^0.0.1-security"
   }
 }
